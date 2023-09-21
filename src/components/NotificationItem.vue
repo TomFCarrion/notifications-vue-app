@@ -69,14 +69,13 @@ const handleNotificationClick = async () => {
 
 <template>
   <div class="flex-row wrapper" @click="handleNotificationClick">
-    <div v-if="!notification.read" class="dot"></div>
-    <UserAvatar :userName="notification.author" />
+    <UserAvatar :userName="notification.author" :showDot="!notification.read" />
     <div class="flex-col info">
       <h1 class="title">{{ notification.title }}</h1>
       <p class="text">{{ notification.preview_text }}</p>
       <span class="flex-row data">
-        <h2 class="author">{{ notification.author }}</h2>
-        <h2 class="author">{{ notification.created }}</h2>
+        <h2 class="author">{{ notification.author.toUpperCase() }}</h2>
+        <h2 class="author">{{ notification.created.toUpperCase() }}</h2>
       </span>
       <transition name="fade" mode="out-in">
         <div v-if="notificationError" class="error">
@@ -101,48 +100,55 @@ const handleNotificationClick = async () => {
   gap: 0.5rem;
 }
 
-.dot {
-  height: 0.1rem;
-  width: 0.1rem;
-  background-color: white;
-  border-radius: 50%;
-  display: inline-block;
-}
 
 .wrapper {
   justify-content: center;
   width: 100%;
   max-width: 30rem;
   padding: 1rem;
-  gap: 1rem;
+  gap: .5rem;
   border: 1px solid #ffffff33;
   cursor: pointer;
+  position: relative;
 }
 
 .title {
-  font-size: 1rem;
+  font-size: .7rem;
   font-weight: bold;
   color: white;
 }
+
 .text {
-  font-size: 0.5rem;
-  font-weight: normal;
+  font-size: .8rem;
+  font-weight: 400;
+
   color: white;
 }
+
 .author {
   color: #ffffff99;
+  font-size: .7rem;
+  font-weight: 600;
+
 }
 
 .error {
-  background-color: #df6873;
+  position: absolute;
+  top: 10;
+  left: 20%;
+  background-color: rgba(223, 104, 115, 0.9);
   color: white;
   padding: 0.5rem;
   border-radius: 0.5rem;
   font-weight: bold;
   text-align: center;
 }
+
 .success {
-  background-color: #80ded9;
+  position: absolute;
+  top: 10;
+  left: 30%;
+  background-color: rgba(128, 222, 217, 0.9);
   color: white;
   padding: 0.5rem;
   border-radius: 0.5rem;

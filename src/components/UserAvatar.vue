@@ -1,8 +1,7 @@
 <template>
   <div class="avatar" :style="{ backgroundColor: randomColor }">
-    <div class="avatar-circle">
-      <span class="avatar-initials">{{ initials }}</span>
-    </div>
+    <div v-if="showDot" class="dot"></div>
+    <span class="avatar-initials">{{ initials }}</span>
   </div>
 </template>
 
@@ -13,10 +12,13 @@ const props = defineProps({
   userName: {
     type: String,
     required: true // Make userName prop mandatory
+  },
+  showDot: {
+    type: Boolean,
   }
 })
 
-const { userName } = toRefs(props)
+const { userName, showDot } = toRefs(props)
 
 const initials = userName.value
   .split(' ')
@@ -36,29 +38,31 @@ const randomColor = getRandomColor()
 </script>
 
 <style>
-.avatar-circle {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: inherit;
+.dot {
+  width: 5px;
+  height: 5px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: -10px;
+  transform: translateY(-50%);
 }
 
 .avatar {
-  width: 2rem;
-  height: 2rem;
+  margin: auto;
+  width: 2.5rem;
+  height: 2.5rem;
   border-radius: 50%;
-  overflow: hidden;
+  background-color: inherit;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 
 .avatar-initials {
   font-size: 1rem;
-  color: #ffffff; /* Text color */
+  color: #ffffff;
 }
-
-
 </style>
