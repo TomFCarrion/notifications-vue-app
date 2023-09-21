@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import axios from 'axios'
 import { ref } from 'vue'
+import UserAvatar from './UserAvatar.vue'
+
 
 export interface Notification {
   id: string
@@ -20,9 +22,7 @@ const { notification } = defineProps<{
 const notificationError = ref<string | null>(null)
 const notificationSuccess = ref<string | null>(null)
 
-
 const handleNotificationClick = async () => {
-  console.log(notification.available_actions)
   try {
     if (notification.available_actions.includes('CREATE_TODO')) {
       // Action is available, make the "CREATE TODO" API call
@@ -31,23 +31,29 @@ const handleNotificationClick = async () => {
         action: 'TODO'
       })
 
-      notificationSuccess.value = 'TODO added'
-      setTimeout(() => {
-        notificationSuccess.value = null
-    }, 2000)
-
-
+      if (response.status === 200 || response.status === 204) {
+        notificationSuccess.value = 'TODO added'
+        setTimeout(() => {
+          notificationSuccess.value = null
+        }, 2000)
+      }
     } else {
       // "CREATE TODO" action is not available, make the "ignore" API call
       const response = await axios.post('https://o59ee.wiremockapi.cloud/notifications/ignore', {
         id: notification.id
       })
 
-      notificationSuccess.value = 'Notification ignored'
+      console.log(response)
+      if (response.status === 200 || response.status === 204) {
+        notificationSuccess.value = 'Notification ignored'
+        setTimeout(() => {
+          notificationSuccess.value = null
+        }, 2000)
+      }
+
       setTimeout(() => {
         notificationSuccess.value = null
-    }, 2000)
-
+      }, 2000)
     }
   } catch (error) {
     // Handle any errors (e.g., display an error message)
@@ -64,6 +70,7 @@ const handleNotificationClick = async () => {
 <template>
   <div class="flex-row wrapper" @click="handleNotificationClick">
     <div v-if="!notification.read" class="dot"></div>
+    <UserAvatar :userName="notification.author" />
     <div class="flex-col info">
       <h1 class="title">{{ notification.title }}</h1>
       <p class="text">{{ notification.preview_text }}</p>
@@ -72,21 +79,20 @@ const handleNotificationClick = async () => {
         <h2 class="author">{{ notification.created }}</h2>
       </span>
       <transition name="fade" mode="out-in">
-      <div v-if="notificationError" class="error">
-        {{ notificationError }}
-      </div>
-    </transition>
-    <transition name="fade" mode="out-in">
-      <div v-if="notificationSuccess" class="success">
-        {{ notificationSuccess }}
-      </div>
-    </transition>
+        <div v-if="notificationError" class="error">
+          {{ notificationError }}
+        </div>
+      </transition>
+      <transition name="fade" mode="out-in">
+        <div v-if="notificationSuccess" class="success">
+          {{ notificationSuccess }}
+        </div>
+      </transition>
     </div>
   </div>
 </template>
 
 <style scoped>
-
 .data {
   justify-content: space-between;
 }
@@ -128,7 +134,7 @@ const handleNotificationClick = async () => {
 }
 
 .error {
-  background-color: #DF6873;
+  background-color: #df6873;
   color: white;
   padding: 0.5rem;
   border-radius: 0.5rem;
@@ -136,7 +142,7 @@ const handleNotificationClick = async () => {
   text-align: center;
 }
 .success {
-  background-color: #80DED9;
+  background-color: #80ded9;
   color: white;
   padding: 0.5rem;
   border-radius: 0.5rem;
@@ -144,11 +150,13 @@ const handleNotificationClick = async () => {
   text-align: center;
 }
 
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.5s ease-in-out;
 }
 
-.fade-enter, .fade-leave-to {
+.fade-enter,
+.fade-leave-to {
   opacity: 0;
 }
 </style>
