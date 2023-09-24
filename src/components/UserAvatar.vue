@@ -6,21 +6,18 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs } from 'vue'
 
-const props = defineProps({
+const { userName, showDot } = defineProps({
   userName: {
     type: String,
-    required: true // Make userName prop mandatory
+    required: true 
   },
   showDot: {
     type: Boolean,
   }
 })
 
-const { userName, showDot } = toRefs(props)
-
-const initials = userName.value
+const initials = userName
   .split(' ')
   .map((word) => word[0])
   .join('')

@@ -2,18 +2,7 @@
 import axios from 'axios'
 import { ref } from 'vue'
 import UserAvatar from './UserAvatar.vue'
-
-
-export interface Notification {
-  id: string
-  title: string
-  preview_text: string
-  full_text: string
-  author: string
-  created: string
-  read: boolean
-  available_actions: string[]
-}
+import type { Notification } from '../types/NotificationsType';
 
 const { notification } = defineProps<{
   notification: Notification
@@ -25,7 +14,7 @@ const notificationSuccess = ref<string | null>(null)
 const handleNotificationClick = async () => {
   try {
     if (notification.available_actions.includes('CREATE_TODO')) {
-      // Action is available, make the "CREATE TODO" API call
+      // "CREATE TODO" available, make the "CREATE TODO" API call
       const response = await axios.post('https://o59ee.wiremockapi.cloud/notifications/action', {
         id: notification.id,
         action: 'TODO'
@@ -43,7 +32,6 @@ const handleNotificationClick = async () => {
         id: notification.id
       })
 
-      console.log(response)
       if (response.status === 200 || response.status === 204) {
         notificationSuccess.value = 'Notification ignored'
         setTimeout(() => {
@@ -56,7 +44,7 @@ const handleNotificationClick = async () => {
       }, 2000)
     }
   } catch (error) {
-    // Handle any errors (e.g., display an error message)
+    // Handle any error
     console.error('Error:', error)
     notificationError.value = "Can't add TODO action to this notification"
     // Clear the error message after 1 second
@@ -68,7 +56,7 @@ const handleNotificationClick = async () => {
 </script>
 
 <template>
-  <div class="flex-row wrapper" @click="handleNotificationClick">
+  <div class="flex-row notification" @click="handleNotificationClick" :data-test-id="notification.id">
     <UserAvatar :userName="notification.author" :showDot="!notification.read" />
     <div class="flex-col info">
       <h1 class="title">{{ notification.title }}</h1>
@@ -101,13 +89,12 @@ const handleNotificationClick = async () => {
 }
 
 
-.wrapper {
+.notification {
   justify-content: center;
   width: 100%;
-  max-width: 30rem;
   padding: 1rem;
   gap: .5rem;
-  border: 1px solid #ffffff33;
+  border: .2px solid #ffffff33;
   cursor: pointer;
   position: relative;
 }
