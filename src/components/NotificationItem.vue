@@ -88,7 +88,6 @@ const handleNotificationClick = async () => {
   gap: 0.5rem;
 }
 
-
 .notification {
   justify-content: center;
   width: 100%;
@@ -118,7 +117,6 @@ const handleNotificationClick = async () => {
   font-weight: 600;
 
 }
-
 .error {
   position: absolute;
   top: 10;
@@ -143,13 +141,5 @@ const handleNotificationClick = async () => {
   text-align: center;
 }
 
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s ease-in-out;
-}
 
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
-}
 </style>

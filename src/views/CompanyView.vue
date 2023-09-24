@@ -1,6 +1,6 @@
 <template>
     <header>
-        <h1>Notifications</h1>
+        <h1>Company Data</h1>
     </header>
 
     <div class="csv-generator">
